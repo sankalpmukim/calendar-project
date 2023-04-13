@@ -13,6 +13,13 @@ const config = {
         project: path.join(__dirname, "tsconfig.json"),
       },
     },
+    {
+      files: ["*.js", "*.jsx"],
+      rules: {
+        // next js image rule
+        "@next/no-img-element": "off",
+      },
+    },
   ],
   parser: "@typescript-eslint/parser",
   parserOptions: {
@@ -21,13 +28,6 @@ const config = {
   plugins: ["@typescript-eslint"],
   extends: ["next/core-web-vitals", "plugin:@typescript-eslint/recommended"],
   rules: {
-    "@typescript-eslint/consistent-type-imports": [
-      "warn",
-      {
-        prefer: "type-imports",
-        fixStyle: "inline-type-imports",
-      },
-    ],
     "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
   },
 };
