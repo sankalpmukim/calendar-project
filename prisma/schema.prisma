@@ -15,3 +15,52 @@ model Example {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
+
+model User {
+    id        String     @id @default(cuid())
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    email     String     @unique
+    password  String
+    name      String
+    role      Role       @default(USER)
+    Calendar  Calendar[]
+}
+
+enum Role {
+    USER
+    ADMIN
+}
+
+enum Color {
+    RED
+    ORANGE
+    YELLOW
+    GREEN
+    BLUE
+    INDIGO
+    VIOLET
+}
+
+model Calendar {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    name      String
+    owner     User     @relation(fields: [ownerId], references: [id])
+    ownerId   String
+    events    Event[]
+    color     Color    @default(BLUE)
+}
+
+model Event {
+    id         String   @id @default(cuid())
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    name       String
+    start      DateTime
+    end        DateTime
+    calendar   Calendar @relation(fields: [calendarId], references: [id])
+    calendarId String
+    color      Color    @default(BLUE)
+}
