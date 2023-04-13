@@ -17,14 +17,24 @@ model Example {
 }
 
 model User {
-    id        String     @id @default(cuid())
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    email     String     @unique
-    password  String
+    id            String     @id @default(cuid())
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+    email         String     @unique
+    password      String
+    profile       Profile?
+    emailVerified Boolean    @default(false)
+    role          Role       @default(USER)
+    Calendar      Calendar[]
+}
+
+model Profile {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
     name      String
-    role      Role       @default(USER)
-    Calendar  Calendar[]
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String   @unique
 }
 
 enum Role {
