@@ -2,6 +2,8 @@ import Layout from "~/components/signup/Layout";
 import TextInput from "../inputs/TextInput";
 import { EnvelopeIcon } from "@heroicons/react/20/solid";
 import { useState } from "react";
+import { api } from "~/utils/api";
+import useNotify from "../notifications/useNotify";
 
 interface RegistrationForm {
   email: string;
@@ -17,6 +19,8 @@ export default function Registration() {
     password: "",
     confirmPassword: "",
   });
+  const mutation = api.user.signup.registerUser.useMutation();
+  const notify = useNotify();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -25,7 +29,20 @@ export default function Registration() {
 
   return (
     <>
-      <Layout title="Registration" shortDescription="Register a new account!">
+      <Layout
+        title="Registration"
+        shortDescription="Register a new account!"
+        onSubmit={(e) => {
+          e.preventDefault();
+          mutation.mutate(form);
+          notify({
+            title: "Registration",
+            message: "Registration successful!",
+            type: "warning",
+            show: true,
+          });
+        }}
+      >
         {/* email */}
         <TextInput
           id={"email"}

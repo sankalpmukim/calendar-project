@@ -77,13 +77,15 @@ export function handlePrismaErrors(error: unknown): void {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error?.code === `P2002`) {
         throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Email already exists",
+          code: "CONFLICT",
+          message: `${
+            error?.meta?.target?.toString() ?? ``
+          }:unique_constraint_failed"`,
         });
       } else if (error?.code === `P2003`) {
         throw new TRPCError({
           code: "BAD_REQUEST",
-          message: "User already exists",
+          message: "Record not found",
         });
       } else if (error?.code === `P2025`) {
         throw new TRPCError({

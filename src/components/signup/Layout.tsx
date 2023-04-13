@@ -1,12 +1,20 @@
-import { ReactNode } from "react";
+import { FormEventHandler, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
   title: string;
   shortDescription: string;
+  onSubmit?: FormEventHandler<HTMLFormElement>;
+  onCancel?: () => void;
 }
 
-export default function Layout({ title, shortDescription, children }: Props) {
+export default function Layout({
+  title,
+  shortDescription,
+  children,
+  onSubmit,
+  onCancel,
+}: Props) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 md:p-8">
       <div className="w-full space-y-10 divide-y divide-gray-900/10">
@@ -20,7 +28,10 @@ export default function Layout({ title, shortDescription, children }: Props) {
             </p>
           </div>
 
-          <form className="bg-white p-4 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2 md:p-8">
+          <form
+            className="bg-white p-4 shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl md:col-span-2 md:p-8"
+            onSubmit={onSubmit}
+          >
             <div className="px-4 py-6 sm:p-8">
               <div className="grid max-w-2xl grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                 {children}
@@ -30,6 +41,7 @@ export default function Layout({ title, shortDescription, children }: Props) {
               <button
                 type="button"
                 className="text-sm font-semibold leading-6 text-gray-900"
+                onClick={onCancel}
               >
                 Cancel
               </button>
