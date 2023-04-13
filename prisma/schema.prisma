@@ -17,15 +17,18 @@ model Example {
 }
 
 model User {
-    id            String     @id @default(cuid())
-    createdAt     DateTime   @default(now())
-    updatedAt     DateTime   @updatedAt
-    email         String     @unique
-    password      String
-    profile       Profile?
-    emailVerified Boolean    @default(false)
-    role          Role       @default(USER)
-    Calendar      Calendar[]
+    id                 String              @id @default(cuid())
+    createdAt          DateTime            @default(now())
+    updatedAt          DateTime            @updatedAt
+    emailVerified      Boolean             @default(false)
+    role               Role                @default(USER)
+    email              String              @unique
+    username           String              @unique
+    password           String
+    salt               String
+    Calendar           Calendar[]
+    profile            Profile?
+    VerificationSecret VerificationSecret?
 }
 
 model Profile {
@@ -33,6 +36,15 @@ model Profile {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     name      String
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String   @unique
+}
+
+model VerificationSecret {
+    id        String   @id @default(cuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    secret    String   @unique
     user      User     @relation(fields: [userId], references: [id])
     userId    String   @unique
 }

@@ -4,9 +4,14 @@
  *
  * We also create a few inference helpers for input and output types.
  */
+import { Prisma } from "@prisma/client";
 import { httpBatchLink, loggerLink } from "@trpc/client";
 import { createTRPCNext } from "@trpc/next";
-import { type inferRouterInputs, type inferRouterOutputs } from "@trpc/server";
+import {
+  type inferRouterInputs,
+  type inferRouterOutputs,
+  TRPCError,
+} from "@trpc/server";
 import superjson from "superjson";
 
 import { type AppRouter } from "~/server/api/root";
@@ -66,3 +71,53 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  * @example type HelloOutput = RouterOutputs['example']['hello']
  */
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
+
+export function handlePrismaErrors(error: unknown): void {
+  if (error instanceof Error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error?.code === `P2002`) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Email already exists",
+        });
+      } else if (error?.code === `P2003`) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "User already exists",
+        });
+      } else if (error?.code === `P2025`) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Record not found",
+        });
+      } else if (error?.code === `P2024`) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Record not found",
+        });
+      } else if (error?.code === `P2016`) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Record not found",
+        });
+      } else {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "An internal server error occured",
+        });
+      }
+    } else if (error instanceof TRPCError) {
+      throw error;
+    } else {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "An internal server error occured",
+      });
+    }
+  } else {
+    throw new TRPCError({
+      code: "INTERNAL_SERVER_ERROR",
+      message: "An internal server error occured",
+    });
+  }
+}
