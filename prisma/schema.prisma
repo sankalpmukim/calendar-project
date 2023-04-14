@@ -28,7 +28,7 @@ model User {
     salt               String
     Calendar           Calendar[]
     profile            Profile?
-    VerificationSecret VerificationSecret?
+    verificationSecret VerificationSecret?
 }
 
 model Profile {
@@ -38,6 +38,8 @@ model Profile {
     name      String
     user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId    String   @unique
+    image     String   @default("https://placehold.co/400")
+    bio       String
 }
 
 model VerificationSecret {

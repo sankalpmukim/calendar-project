@@ -24,7 +24,6 @@ export const sendEmailVerification = async (
     if (!process.env.SITE_URL) {
       throw new Error("SITE_URL is not set");
     }
-    console.count("registration");
 
     const subject = "Verify your email";
     const message = `Click the link below to verify your email:
@@ -32,8 +31,6 @@ export const sendEmailVerification = async (
     return sendEmail(to, subject, message);
   } catch (error) {
     console.error(error);
-    console.count("registration");
-    console.countReset("registration");
     return false;
   }
 };

@@ -7,7 +7,9 @@ interface Props {
 }
 
 export default function EmailVerification({ callNextPage, userId }: Props) {
-  const { data } = api.user.signup.emailVerified.useQuery({ userId });
+  const { data, refetch, isLoading } = api.user.signup.emailVerified.useQuery({
+    userId,
+  });
 
   useEffect(() => {
     if (data) {
@@ -24,7 +26,11 @@ export default function EmailVerification({ callNextPage, userId }: Props) {
           Start using our app today.
         </h2>
         <div className="mt-10 flex items-center gap-x-6">
-          <button className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+          <button
+            onClick={() => void refetch()}
+            disabled={isLoading}
+            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
             Check
           </button>
         </div>

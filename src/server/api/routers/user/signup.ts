@@ -5,6 +5,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { handlePrismaErrors } from "~/utils/api";
 import { sendEmailVerification } from "~/services/email";
 import { TRPCError } from "@trpc/server";
+import { getToken } from "~/services/auth";
 
 export const signupRouter = createTRPCRouter({
   registerUser: publicProcedure
@@ -31,13 +32,20 @@ export const signupRouter = createTRPCRouter({
             username: input.username,
             password,
             salt,
-            VerificationSecret: {
+            verificationSecret: {
               create: {
                 secret: verificationSecret,
               },
             },
           },
         });
+
+        const token = getToken(user);
+
+        // set-cookie header
+        ctx.res.setHeader("Set-Cookie", [
+          `token=${token}; HttpOnly; Path=/; Max-Age=86400`,
+        ]);
 
         const {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -50,7 +58,6 @@ export const signupRouter = createTRPCRouter({
           updatedAt,
           ...userWithoutPassword
         } = user;
-        console.count("registration");
 
         const emailSent = await sendEmailVerification(
           user.email,
@@ -89,6 +96,41 @@ export const signupRouter = createTRPCRouter({
         });
 
         return user?.emailVerified ?? false;
+      } catch (err) {
+        handlePrismaErrors(err);
+      }
+    }),
+
+  createProfile: publicProcedure
+    .input(
+      z.object({
+        userId: z.string(),
+        name: z.string().min(3).max(20),
+        bio: z.string().min(3).max(100),
+        image: z.boolean(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { prisma } = ctx;
+      try {
+        const profile = await prisma.profile.create({
+          data: {
+            name: input.name,
+            bio: input.bio,
+            image: input.image
+              ? `https://${process.env.S3_BUCKET ?? ``}.s3.amazonaws.com/${
+                  input.userId
+                }.png`
+              : undefined,
+            user: {
+              connect: {
+                id: input.userId,
+              },
+            },
+          },
+        });
+
+        return profile;
       } catch (err) {
         handlePrismaErrors(err);
       }
