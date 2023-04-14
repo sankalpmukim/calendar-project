@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import Layout from "~/components/signup/Layout";
 import TextInput from "../inputs/TextInput";
 import { EnvelopeIcon } from "@heroicons/react/20/solid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
 import useNotify from "../notifications/useNotify";
 
@@ -20,6 +21,8 @@ export default function Registration() {
     confirmPassword: "",
   });
   const mutation = api.user.signup.registerUser.useMutation();
+  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const notify = useNotify();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,21 +30,66 @@ export default function Registration() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  useEffect(() => {
+    if (mutation.error) {
+      console.log(mutation.error);
+      if (mutation.error.message.includes("email")) {
+        if (mutation.error.message.includes("unique")) {
+          setEmailError("Email already exists");
+        } else {
+          setEmailError("Invalid email");
+        }
+      } else if (mutation.error.message.includes("username")) {
+        if (mutation.error.message.includes("unique")) {
+          setUsernameError("Username already exists");
+        } else {
+          setUsernameError(
+            "Invalid username. It should be between 3 and 20 characters"
+          );
+        }
+      }
+    }
+  }, [mutation.error]);
+
+  useEffect(() => {
+    if (mutation.isSuccess) {
+      setForm({
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+      });
+    }
+  }, [mutation.isSuccess]);
+
+  useEffect(() => {
+    setEmailError("");
+  }, [form.email]);
   return (
     <>
       <Layout
         title="Registration"
         shortDescription="Register a new account!"
-        onSubmit={(e) => {
-          e.preventDefault();
-          mutation.mutate(form);
-          notify({
-            title: "Registration",
-            message: "Registration successful!",
-            type: "warning",
-            show: true,
-          });
+        onSubmit={async (e) => {
+          try {
+            e.preventDefault();
+            await mutation.mutateAsync(form);
+            notify({
+              title: "Registration",
+              message: "Registration successful!",
+              type: "warning",
+              show: true,
+            });
+          } catch (error) {
+            notify({
+              title: "Registration",
+              message: "Registration failed!",
+              type: "error",
+              show: true,
+            });
+          }
         }}
+        submitDisabled={mutation.isLoading || emailError.length > 0}
       >
         {/* email */}
         <TextInput
@@ -56,6 +104,7 @@ export default function Registration() {
           placeholder="you@example.com"
           value={form.email}
           onChange={handleChange}
+          error={emailError}
         />
         {/* unique username */}
         <TextInput
@@ -64,6 +113,7 @@ export default function Registration() {
           placeholder="username"
           value={form.username}
           onChange={handleChange}
+          error={usernameError}
         />
         {/* password */}
         <TextInput

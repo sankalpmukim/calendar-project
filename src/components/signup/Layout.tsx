@@ -4,8 +4,10 @@ interface Props {
   children: ReactNode;
   title: string;
   shortDescription: string;
-  onSubmit?: FormEventHandler<HTMLFormElement>;
+  onSubmit: FormEventHandler<HTMLFormElement>;
   onCancel?: () => void;
+  submitText?: string;
+  submitDisabled?: boolean;
 }
 
 export default function Layout({
@@ -14,6 +16,8 @@ export default function Layout({
   children,
   onSubmit,
   onCancel,
+  submitText = "Submit",
+  submitDisabled = false,
 }: Props) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 p-4 md:p-8">
@@ -37,21 +41,34 @@ export default function Layout({
                 {children}
               </div>
             </div>
-            <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
-              <button
-                type="button"
-                className="text-sm font-semibold leading-6 text-gray-900"
-                onClick={onCancel}
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Save
-              </button>
-            </div>
+            {onCancel ? (
+              <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
+                <button
+                  type="button"
+                  className="text-sm font-semibold leading-6 text-gray-900"
+                  onClick={onCancel}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  disabled={submitDisabled}
+                >
+                  {submitText}
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8">
+                <button
+                  type="submit"
+                  className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  disabled={submitDisabled}
+                >
+                  {submitText}
+                </button>
+              </div>
+            )}
           </form>
         </div>
       </div>
