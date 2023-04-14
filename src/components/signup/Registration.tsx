@@ -13,7 +13,11 @@ interface RegistrationForm {
   confirmPassword: string;
 }
 
-export default function Registration() {
+interface Props {
+  callNextPage: (userId: string) => void;
+}
+
+export default function Registration({ callNextPage }: Props) {
   const [form, setForm] = useState<RegistrationForm>({
     email: "",
     username: "",
@@ -77,13 +81,24 @@ export default function Registration() {
         onSubmit={async (e) => {
           try {
             e.preventDefault();
-            await mutation.mutateAsync(form);
+            if (form.password !== form.confirmPassword) {
+              notify({
+                title: "Registration",
+                message: "Passwords do not match!",
+                type: "error",
+                show: true,
+              });
+              return;
+            }
+            const user = await mutation.mutateAsync(form);
             notify({
               title: "Registration",
-              message: "Registration successful!",
+              message:
+                "Registration successful! Check your email for confirmation.",
               type: "warning",
               show: true,
             });
+            callNextPage(user?.id ?? "");
           } catch (error) {
             notify({
               title: "Registration",
