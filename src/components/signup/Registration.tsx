@@ -65,6 +65,10 @@ export default function Registration() {
   useEffect(() => {
     setEmailError("");
   }, [form.email]);
+
+  useEffect(() => {
+    setUsernameError("");
+  }, [form.username]);
   return (
     <>
       <Layout
@@ -89,7 +93,11 @@ export default function Registration() {
             });
           }
         }}
-        submitDisabled={mutation.isLoading || emailError.length > 0}
+        submitDisabled={
+          mutation.isLoading ||
+          emailError.length > 0 ||
+          usernameError.length > 0
+        }
       >
         {/* email */}
         <TextInput
