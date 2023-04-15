@@ -10,7 +10,7 @@ interface Props {
   submitDisabled?: boolean;
 }
 
-export default function Layout({
+export default function SignupLayout({
   title,
   shortDescription,
   children,

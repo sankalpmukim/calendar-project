@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import Layout from "~/components/signup/Layout";
+import SignupLayout from "~/components/signup/Layout";
 import TextInput from "../inputs/TextInput";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
@@ -40,7 +40,7 @@ export default function Profile({ callNextPage, userId }: Props) {
 
   return (
     <>
-      <Layout
+      <SignupLayout
         title="Profile"
         shortDescription="Setup your public profile!"
         // eslint-disable-next-line @typescript-eslint/require-await
@@ -86,7 +86,7 @@ export default function Profile({ callNextPage, userId }: Props) {
         />
         {/* Image input */}
         <ImageInput label="Profile Picture" name="image" id={"file"} />
-      </Layout>
+      </SignupLayout>
     </>
   );
 }

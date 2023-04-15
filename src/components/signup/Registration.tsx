@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import Layout from "~/components/signup/Layout";
+import SignupLayout from "~/components/signup/Layout";
 import TextInput from "../inputs/TextInput";
 import { EnvelopeIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
@@ -75,7 +75,7 @@ export default function Registration({ callNextPage }: Props) {
   }, [form.username]);
   return (
     <>
-      <Layout
+      <SignupLayout
         title="Registration"
         shortDescription="Register a new account!"
         onSubmit={async (e) => {
@@ -156,7 +156,7 @@ export default function Registration({ callNextPage }: Props) {
           value={form.confirmPassword}
           onChange={handleChange}
         />
-      </Layout>
+      </SignupLayout>
     </>
   );
 }
