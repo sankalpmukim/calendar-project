@@ -118,9 +118,9 @@ export const signupRouter = createTRPCRouter({
             name: input.name,
             bio: input.bio,
             image: input.image
-              ? `https://${process.env.S3_BUCKET ?? ``}.s3.amazonaws.com/${
-                  input.userId
-                }.png`
+              ? `https://${
+                  process.env.NEXT_PUBLIC_S3_BUCKET ?? ``
+                }.s3.amazonaws.com/${input.userId}.png`
               : undefined,
             user: {
               connect: {

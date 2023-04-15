@@ -7,7 +7,9 @@ import {
 } from "@heroicons/react/20/solid";
 import { Menu, Transition } from "@headlessui/react";
 import { classNames } from "~/utils/css";
-import { format, parse, startOfToday } from "date-fns";
+import { format, startOfToday, startOfWeek } from "date-fns";
+import addDays from "date-fns/addDays";
+import { DAYS_OF_WEEK } from "./contants";
 
 export default function CalendarLayout() {
   const container = useRef<HTMLDivElement>(null);
@@ -15,23 +17,41 @@ export default function CalendarLayout() {
   const containerOffset = useRef<HTMLDivElement>(null);
   const today = startOfToday();
   const [selectedDay, setSelectedDay] = useState(today);
-  const [currentMonth, setCurrentMonth] = useState(format(today, "LLLL yyyy"));
-  const firstDayCurrentMonth = parse(currentMonth, "LLLL yyyy", new Date());
 
-  const isSelected = (day: Date) => {
-    return format(day, "yyyy-MM-dd") === format(selectedDay, "yyyy-MM-dd");
+  const [currentMonth, setCurrentMonth] = useState(
+    format(selectedDay, "LLLL yyyy")
+  );
+  const firstDayCurrentWeek = startOfWeek(selectedDay);
+
+  const previousWeek = () => {
+    const previousWeek = new Date(
+      firstDayCurrentWeek.setDate(firstDayCurrentWeek.getDate() - 7)
+    );
+    setSelectedDay(previousWeek);
+
+    // month
+    setCurrentMonth(format(previousWeek, "LLLL yyyy"));
   };
 
-  const isToday = (day: Date) => {
-    return format(day, "yyyy-MM-dd") === format(today, "yyyy-MM-dd");
+  const nextWeek = () => {
+    const nextWeek = new Date(
+      firstDayCurrentWeek.setDate(firstDayCurrentWeek.getDate() + 7)
+    );
+    setSelectedDay(nextWeek);
+
+    // month
+    setCurrentMonth(format(nextWeek, "LLLL yyyy"));
   };
 
-  const isCurrentMonth = (day: Date) => {
-    return format(day, "yyyy-MM") === format(firstDayCurrentMonth, "yyyy-MM");
+  const todayWeek = () => {
+    setSelectedDay(today);
+
+    // month
+    setCurrentMonth(format(today, "LLLL yyyy"));
   };
 
+  // Set the container scroll position based on the current time.
   useEffect(() => {
-    // Set the container scroll position based on the current time.
     const currentMinute = new Date().getHours() * 60;
     if (container.current && containerNav.current && containerOffset.current)
       container.current.scrollTop =
@@ -46,7 +66,7 @@ export default function CalendarLayout() {
     <div className="relative flex h-[85vh] flex-col rounded-lg border">
       <header className="sticky top-0 flex flex-none items-center justify-between border-b border-gray-200 px-6 py-4">
         <h1 className="text-base font-semibold leading-6 text-gray-900">
-          <time dateTime="2022-01">January 2022</time>
+          <time dateTime="2022-01">{currentMonth}</time>
         </h1>
         <div className="flex items-center">
           <div className="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
@@ -57,6 +77,7 @@ export default function CalendarLayout() {
             <button
               type="button"
               className="flex items-center justify-center rounded-l-md py-2 pl-3 pr-4 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
+              onClick={previousWeek}
             >
               <span className="sr-only">Previous week</span>
               <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
@@ -64,6 +85,7 @@ export default function CalendarLayout() {
             <button
               type="button"
               className="hidden px-3.5 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:relative md:block"
+              onClick={todayWeek}
             >
               Today
             </button>
@@ -71,6 +93,7 @@ export default function CalendarLayout() {
             <button
               type="button"
               className="flex items-center justify-center rounded-r-md py-2 pl-4 pr-3 text-gray-400 hover:text-gray-500 focus:relative md:w-9 md:px-2 md:hover:bg-gray-50"
+              onClick={nextWeek}
             >
               <span className="sr-only">Next week</span>
               <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
@@ -98,7 +121,7 @@ export default function CalendarLayout() {
                 leaveFrom="transform opacity-100 scale-100"
                 leaveTo="transform opacity-0 scale-95"
               >
-                <Menu.Items className="absolute right-0 z-10 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                <Menu.Items className="absolute right-0 z-50 mt-3 w-36 origin-top-right overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                   <div className="py-1">
                     <Menu.Item>
                       {({ active }) => (
@@ -291,7 +314,7 @@ export default function CalendarLayout() {
       </header>
       <div
         ref={container}
-        className="isolate flex flex-auto flex-col overflow-auto bg-white"
+        className="flex flex-auto flex-col overflow-auto bg-white"
       >
         <div
           style={{ width: "165%" }}
@@ -302,129 +325,34 @@ export default function CalendarLayout() {
             className="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
           >
             <div className="grid grid-cols-7 text-sm leading-6 text-gray-500 sm:hidden">
-              <button
-                type="button"
-                className="flex flex-col items-center pb-3 pt-2"
-              >
-                M{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  10
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pb-3 pt-2"
-              >
-                T{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  11
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pb-3 pt-2"
-              >
-                W{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                  12
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pb-3 pt-2"
-              >
-                T{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  13
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pb-3 pt-2"
-              >
-                F{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  14
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pb-3 pt-2"
-              >
-                S{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  15
-                </span>
-              </button>
-              <button
-                type="button"
-                className="flex flex-col items-center pb-3 pt-2"
-              >
-                S{" "}
-                <span className="mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900">
-                  16
-                </span>
-              </button>
+              {DAYS_OF_WEEK.map((day, index) => (
+                <DayHeaderSmallScreen
+                  day={day}
+                  date={addDays(
+                    startOfWeek(selectedDay, { weekStartsOn: 1 }),
+                    index
+                  )}
+                  month={selectedDay.getMonth()}
+                  key={index}
+                  today={today}
+                />
+              ))}
             </div>
 
             <div className="-mr-px hidden grid-cols-7 divide-x divide-gray-100 border-r border-gray-100 text-sm leading-6 text-gray-500 sm:grid">
               <div className="col-end-1 w-14" />
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Mon{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    10
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Tue{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    11
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span className="flex items-baseline">
-                  Wed{" "}
-                  <span className="ml-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white">
-                    12
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Thu{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    13
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Fri{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    14
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Sat{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    15
-                  </span>
-                </span>
-              </div>
-              <div className="flex items-center justify-center py-3">
-                <span>
-                  Sun{" "}
-                  <span className="items-center justify-center font-semibold text-gray-900">
-                    16
-                  </span>
-                </span>
-              </div>
+              {DAYS_OF_WEEK.map((day, index) => (
+                <DayHeaderBigScreen
+                  day={day}
+                  date={addDays(
+                    startOfWeek(selectedDay, { weekStartsOn: 1 }),
+                    index
+                  )}
+                  month={selectedDay.getMonth()}
+                  key={index}
+                  today={today}
+                />
+              ))}
             </div>
           </div>
           <div className="flex flex-auto">
@@ -657,3 +585,62 @@ export default function CalendarLayout() {
     </div>
   );
 }
+
+const DayHeaderBigScreen = ({
+  day,
+  date,
+  today,
+  month,
+}: {
+  day: string;
+  date: Date;
+  month: number;
+  today: Date;
+}) => (
+  <div className="flex items-center justify-center py-3">
+    <span
+      className={classNames(
+        today.getDate() === date.getDate() && today.getMonth() === month
+          ? "flex items-baseline"
+          : ``
+      )}
+    >
+      {day.substring(0, 3) + ` `}
+      <span
+        className={classNames(
+          today.getDate() === date.getDate() && today.getMonth() === month
+            ? "ml-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white"
+            : "items-center justify-center font-semibold text-gray-900"
+        )}
+      >
+        {date.getDate()}
+      </span>
+    </span>
+  </div>
+);
+
+const DayHeaderSmallScreen = ({
+  day,
+  date,
+  today,
+  month,
+}: {
+  day: string;
+  date: Date;
+  month: number;
+  today: Date;
+}) => (
+  <button type="button" className="flex flex-col items-center pb-3 pt-2">
+    {`${day.substring(0, 3)} `}
+    <span
+      className={classNames(
+        "mt-1 flex h-8 w-8 items-center justify-center font-semibold text-gray-900",
+        today.getDate() === date.getDate() && today.getMonth() === month
+          ? "rounded-full bg-indigo-600 text-white"
+          : ``
+      )}
+    >
+      {date.getDate()}
+    </span>
+  </button>
+);
