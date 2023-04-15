@@ -16,7 +16,7 @@ export default async function handler(
   }
 
   const post = await createPresignedPost(s3Client, {
-    Bucket: process.env.S3_BUCKET ?? ``,
+    Bucket: process.env.NEXT_PUBLIC_S3_BUCKET ?? ``,
     Key: req.query.file,
     Fields: {
       acl: "public-read",

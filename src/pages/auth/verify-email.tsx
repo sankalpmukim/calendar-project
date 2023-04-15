@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import { prisma } from "~/server/db";
+import Head from "next/head"
 
 interface Props {
   verified: boolean;
@@ -7,15 +8,20 @@ interface Props {
 
 export default function VerifyEmail({ verified }: Props) {
   return (
-    <div className="flex h-full items-center bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
-        <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          {verified
-            ? "Your email has been verified."
-            : "Your email could not be verified."}
-        </h2>
+    <>
+    <Head>
+      <title>{`Email Verification`}</title>
+    </Head>
+      <div className="flex h-full items-center bg-white">
+        <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            {verified
+              ? "Your email has been verified."
+              : "Your email could not be verified."}
+          </h2>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

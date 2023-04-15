@@ -53,7 +53,7 @@ export function logOut(res?: NextApiResponse): void {
   // delete the cookie
   if (typeof res === "undefined") {
     delete_cookie("token");
-    window.location.href = "/";
+    window.location.href = "/auth/loggedOut";
   } else {
     res.setHeader("Set-Cookie", [`token=; Path=/; Max-Age=0`]);
     res.writeHead(302, { Location: "/" });
