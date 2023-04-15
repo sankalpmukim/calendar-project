@@ -9,7 +9,6 @@ const server = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]),
   SITE_URL: z.string().url(),
   JWT_SECRET: z.string().min(1),
-  S3_BUCKET: z.string().min(1),
   AWS_REGION: z.string().min(1),
 });
 
@@ -19,7 +18,8 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
-  // NEXT_PUBLIC_SITE_URL: z.string().url(),
+
+  NEXT_PUBLIC_S3_BUCKET: z.string().min(1),
 });
 
 /**
@@ -33,7 +33,7 @@ const processEnv = {
   NODE_ENV: process.env.NODE_ENV,
   SITE_URL: process.env.SITE_URL,
   JWT_SECRET: process.env.JWT_SECRET,
-  S3_BUCKET: process.env.S3_BUCKET,
+  NEXT_PUBLIC_S3_BUCKET: process.env.NEXT_PUBLIC_S3_BUCKET,
   AWS_REGION: process.env.AWS_REGION,
 };
 

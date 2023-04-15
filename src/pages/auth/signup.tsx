@@ -35,7 +35,7 @@ export default function Signup() {
         <Profile
           callNextPage={function (): void {
             console.log("Profile created");
-            void router.push("/auth/login");
+            void router.push("/");
           }}
           userId={userId}
         />

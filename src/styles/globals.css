@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html {
-  @apply h-full;
+  @apply h-full bg-white;
 }
 body {
   @apply h-full;

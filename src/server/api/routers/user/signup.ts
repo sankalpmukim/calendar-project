@@ -44,7 +44,7 @@ export const signupRouter = createTRPCRouter({
 
         // set-cookie header
         ctx.res.setHeader("Set-Cookie", [
-          `token=${token}; HttpOnly; Path=/; Max-Age=86400`,
+          `token=${token}; Path=/; Max-Age=86400`,
         ]);
 
         const {
