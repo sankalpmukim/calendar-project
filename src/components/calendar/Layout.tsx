@@ -10,6 +10,7 @@ import { classNames } from "~/utils/css";
 import { startOfWeek } from "date-fns";
 import addDays from "date-fns/addDays";
 import { DAYS_OF_WEEK } from "~/components/calendar/contants";
+import { useAddEventModalContext } from "~/components/calendar/AddEvent";
 
 interface Props {
   children: ReactNode;
@@ -50,6 +51,7 @@ export default function CalendarLayout({
           currentMinute) /
         1440;
   }, []);
+  const setOpen = useAddEventModalContext()[1];
 
   return (
     <div className="relative flex h-[85vh] flex-col rounded-lg border">
@@ -195,6 +197,15 @@ export default function CalendarLayout({
                 void refetch();
               }}
             >
+              {`Refresh`}
+            </button>
+            <button
+              type="button"
+              className="ml-6 rounded-md  bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
               Add event
             </button>
           </div>
@@ -325,7 +336,7 @@ export default function CalendarLayout({
         >
           <div
             ref={containerNav}
-            className="sticky top-0 z-30 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
+            className="sticky top-0 z-10 flex-none bg-white shadow ring-1 ring-black ring-opacity-5 sm:pr-8"
           >
             <div className="grid grid-cols-7 text-sm leading-6 text-gray-500 sm:hidden">
               {DAYS_OF_WEEK.map((day, index) => (

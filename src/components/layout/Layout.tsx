@@ -18,9 +18,9 @@ import useSession from "~/components/session/useSession";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { Calendar } from "@prisma/client";
-import { useCalendarContext } from "../calendar/useCalendars";
-import MarketingScreen from "../MarketingScreen";
-import { CalendarColors } from "../calendar/EventItem";
+import { useCalendarContext } from "~/components/calendar/useCalendars";
+import MarketingScreen from "~/components/MarketingScreen";
+import { CalendarColors } from "~/components/calendar/EventItem";
 
 interface NavigationItem {
   name: string;
