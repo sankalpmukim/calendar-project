@@ -19,6 +19,7 @@ import Link from "next/link";
 import { api } from "~/utils/api";
 import { Calendar } from "@prisma/client";
 import { useCalendarContext } from "../calendar/useCalendars";
+import MarketingScreen from "../MarketingScreen";
 
 interface NavigationItem {
   name: string;
@@ -368,8 +369,7 @@ export default function Layout({ children }: Props): JSX.Element {
         </div>
       ) : (
         <>
-          <div>Not logged in.</div>
-          <Link href="/auth/login">Go login</Link>
+          <MarketingScreen />
         </>
       )}
     </>

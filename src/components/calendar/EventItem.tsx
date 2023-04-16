@@ -22,7 +22,7 @@ export default function EventItem({ startTime, endTime, title }: Props) {
       >
         <p className="order-1 font-semibold text-gray-700">{title}</p>
         <p className="text-gray-500 group-hover:text-gray-700">
-          <time dateTime="2022-01-15T10:00">{format(startTime, "h:m a")}</time>
+          <time dateTime="2022-01-15T10:00">{format(startTime, "h:mm a")}</time>
         </p>
       </a>
     </li>

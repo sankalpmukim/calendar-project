@@ -1,4 +1,4 @@
-import { Fragment, ReactNode, useEffect, useRef, useState } from "react";
+import { Fragment, ReactNode, useEffect, useRef } from "react";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
@@ -7,53 +7,38 @@ import {
 } from "@heroicons/react/20/solid";
 import { Menu, Transition } from "@headlessui/react";
 import { classNames } from "~/utils/css";
-import { format, startOfToday, startOfWeek } from "date-fns";
+import { startOfWeek } from "date-fns";
 import addDays from "date-fns/addDays";
 import { DAYS_OF_WEEK } from "~/components/calendar/contants";
 
 interface Props {
   children: ReactNode;
+  currentMonth: string;
+  previousWeek: () => void;
+  nextWeek: () => void;
+  todayWeek: () => void;
+  selectedDay: Date;
+  today: Date;
+  loading: boolean;
+  error: boolean;
+  refetch: () => Promise<unknown>;
 }
 
-export default function CalendarLayout({ children }: Props) {
+export default function CalendarLayout({
+  children,
+  currentMonth,
+  previousWeek,
+  nextWeek,
+  todayWeek,
+  selectedDay,
+  today,
+  loading,
+  error,
+  refetch,
+}: Props) {
   const container = useRef<HTMLDivElement>(null);
   const containerNav = useRef<HTMLDivElement>(null);
   const containerOffset = useRef<HTMLDivElement>(null);
-  const today = startOfToday();
-  const [selectedDay, setSelectedDay] = useState(today);
-
-  const [currentMonth, setCurrentMonth] = useState(
-    format(selectedDay, "LLLL yyyy")
-  );
-  const firstDayCurrentWeek = startOfWeek(selectedDay);
-
-  const previousWeek = () => {
-    const previousWeek = new Date(
-      firstDayCurrentWeek.setDate(firstDayCurrentWeek.getDate() - 7)
-    );
-    setSelectedDay(previousWeek);
-
-    // month
-    setCurrentMonth(format(previousWeek, "LLLL yyyy"));
-  };
-
-  const nextWeek = () => {
-    const nextWeek = new Date(
-      firstDayCurrentWeek.setDate(firstDayCurrentWeek.getDate() + 7)
-    );
-    setSelectedDay(nextWeek);
-
-    // month
-    setCurrentMonth(format(nextWeek, "LLLL yyyy"));
-  };
-
-  const todayWeek = () => {
-    setSelectedDay(today);
-
-    // month
-    setCurrentMonth(format(today, "LLLL yyyy"));
-  };
-
   // Set the container scroll position based on the current time.
   useEffect(() => {
     const currentMinute = new Date().getHours() * 60;
@@ -72,6 +57,16 @@ export default function CalendarLayout({ children }: Props) {
         <h1 className="text-base font-semibold leading-6 text-gray-900">
           <time dateTime="2022-01">{currentMonth}</time>
         </h1>
+        {loading && (
+          <div className="ml-4 flex items-center">
+            <div className="h-4 w-4 animate-spin rounded-full border-b-2 border-gray-900" />
+          </div>
+        )}
+        {error && (
+          <div className="ml-4 flex items-center">
+            <div className="h-4 w-4 rounded-full bg-red-500" />
+          </div>
+        )}{" "}
         <div className="flex items-center">
           <div className="relative flex items-center rounded-md bg-white shadow-sm md:items-stretch">
             <div
@@ -103,6 +98,7 @@ export default function CalendarLayout({ children }: Props) {
               <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
             </button>
           </div>
+
           <div className="hidden md:ml-4 md:flex md:items-center">
             <Menu as="div" className="relative">
               <Menu.Button
@@ -195,6 +191,9 @@ export default function CalendarLayout({ children }: Props) {
             <button
               type="button"
               className="ml-6 rounded-md  bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              onClick={() => {
+                void refetch();
+              }}
             >
               Add event
             </button>
