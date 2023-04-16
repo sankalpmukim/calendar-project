@@ -9,15 +9,21 @@ import { CalendarProvider } from "~/components/calendar/useCalendars";
 import AddEvent, {
   AddEventModalProvider,
 } from "~/components/calendar/AddEvent";
+import AddCalendar, {
+  AddCalendarModalProvider,
+} from "~/components/calendar/AddCalendar";
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <NotificationsProvider>
       <CalendarProvider>
         <AddEventModalProvider>
-          <AddEvent />
-          <NotificationsComponent />
-          <Component {...pageProps} />
+          <AddCalendarModalProvider>
+            <AddCalendar />
+            <AddEvent />
+            <NotificationsComponent />
+            <Component {...pageProps} />
+          </AddCalendarModalProvider>
         </AddEventModalProvider>
       </CalendarProvider>
     </NotificationsProvider>

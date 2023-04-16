@@ -1,26 +1,40 @@
-/* eslint-disable @next/next/no-img-element */
-import { Fragment, ReactNode } from "react";
+import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { classNames } from "~/utils/css";
 
+// const people = [
+//   { id: "1", name: "Wade Cooper", online: true },
+//   { id: "2", name: "Arlene Mccoy", online: false },
+//   { id: "3", name: "Devon Webb", online: false },
+//   { id: "4", name: "Tom Cook", online: true },
+//   { id: "5", name: "Tanya Fox", online: false },
+//   { id: "6", name: "Hellen Schmidt", online: true },
+//   { id: "7", name: "Caroline Schultz", online: true },
+//   { id: "8", name: "Mason Heaney", online: false },
+//   { id: "9", name: "Claudie Smitham", online: true },
+//   { id: "10", name: "Emil Schaefer", online: false },
+// ];
+
 interface Option {
   id: string;
   name: string;
-  avatar: ReactNode;
+  online: boolean;
 }
 
-export default function SelectInput({
-  options,
-  label,
-  selected,
-  setSelected,
-}: {
+interface Props {
   options: Option[];
-  selected: Option;
+  selected?: Option;
   setSelected: (option: Option) => void;
   label: string;
-}) {
+}
+
+export default function SelectInputStatus({
+  selected,
+  setSelected,
+  options,
+  label,
+}: Props) {
   return (
     <Listbox value={selected} onChange={setSelected}>
       {({ open }) => (
@@ -29,12 +43,20 @@ export default function SelectInput({
             {label}
           </Listbox.Label>
           <div className="relative mt-2">
-            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+            <Listbox.Button className="relative w-full cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
               <span className="flex items-center">
-                {selected?.avatar && selected.avatar}
-                <span className="ml-3 block truncate">{selected?.name}</span>
+                <span
+                  aria-label={selected?.online ? "Online" : "Offline"}
+                  className={classNames(
+                    selected?.online ? "bg-green-400" : "bg-gray-200",
+                    "inline-block h-2 w-2 flex-shrink-0 rounded-full"
+                  )}
+                />
+                <span className="ml-3 block truncate">
+                  {selected?.name ?? `Select a Calendar`}
+                </span>
               </span>
-              <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+              <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                 <ChevronUpDownIcon
                   className="h-5 w-5 text-gray-400"
                   aria-hidden="true"
@@ -49,29 +71,39 @@ export default function SelectInput({
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <Listbox.Options className="absolute z-50 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                {options.map((option) => (
+              <Listbox.Options className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                {options.map((person) => (
                   <Listbox.Option
-                    key={option.id}
+                    key={person.id}
                     className={({ active }) =>
                       classNames(
                         active ? "bg-indigo-600 text-white" : "text-gray-900",
                         "relative cursor-default select-none py-2 pl-3 pr-9"
                       )
                     }
-                    value={option}
+                    value={person}
                   >
                     {({ selected, active }) => (
                       <>
                         <div className="flex items-center">
-                          {option.avatar}
+                          <span
+                            className={classNames(
+                              person.online ? "bg-green-400" : "bg-gray-200",
+                              "inline-block h-2 w-2 flex-shrink-0 rounded-full"
+                            )}
+                            aria-hidden="true"
+                          />
                           <span
                             className={classNames(
                               selected ? "font-semibold" : "font-normal",
                               "ml-3 block truncate"
                             )}
                           >
-                            {option.name}
+                            {person.name}
+                            <span className="sr-only">
+                              {" "}
+                              is {person.online ? "online" : "offline"}
+                            </span>
                           </span>
                         </div>
 

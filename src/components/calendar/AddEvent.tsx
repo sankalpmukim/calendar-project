@@ -12,7 +12,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import TextInput from "../inputs/TextInput";
 import { api } from "~/utils/api";
-import SelectInput from "../inputs/SelectInput";
+import SelectInputStatus from "../inputs/SelectInputStatus";
 import { useCalendarContext } from "./useCalendars";
 import useNotify from "../notifications/useNotify";
 
@@ -85,7 +85,7 @@ export default function AddEvent() {
                     </div>
                     {typeof data !== "undefined" ? (
                       <div className="mt-2">
-                        <SelectInput
+                        <SelectInputStatus
                           options={data.map((calendar) => ({
                             name: calendar.name,
                             id: calendar.id,
@@ -98,7 +98,7 @@ export default function AddEvent() {
                       </div>
                     ) : (
                       <div className="mt-2">
-                        <SelectInput
+                        <SelectInputStatus
                           options={[]}
                           selected={{
                             name: "Loading...",

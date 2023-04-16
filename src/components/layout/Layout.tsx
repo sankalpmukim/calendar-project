@@ -11,6 +11,7 @@ import {
 import {
   ChevronDownIcon,
   MagnifyingGlassIcon,
+  PlusCircleIcon,
 } from "@heroicons/react/20/solid";
 import { classNames } from "~/utils/css";
 import { logOut } from "~/services/auth";
@@ -21,6 +22,7 @@ import { Calendar } from "@prisma/client";
 import { useCalendarContext } from "~/components/calendar/useCalendars";
 import MarketingScreen from "~/components/MarketingScreen";
 import { CalendarColors } from "~/components/calendar/EventItem";
+import { useAddCalendarModalContext } from "../calendar/AddCalendar";
 
 interface NavigationItem {
   name: string;
@@ -74,6 +76,7 @@ interface Props {
 export default function Layout({ children }: Props): JSX.Element {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const session = useSession();
+  const setOpen = useAddCalendarModalContext()[1];
 
   return (
     <>
@@ -179,6 +182,25 @@ export default function Layout({ children }: Props): JSX.Element {
                             </div>
                             <ul role="list" className="-mx-2 mt-2 space-y-1">
                               <CalendarList />
+                              <li>
+                                <button
+                                  className={classNames(
+                                    "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                                    "group flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                                  )}
+                                  onClick={() => setOpen(true)}
+                                >
+                                  <span
+                                    className={classNames(
+                                      "border-gray-200 text-indigo-400 group-hover:border-indigo-600 group-hover:text-indigo-600",
+                                      "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
+                                    )}
+                                  >
+                                    <PlusCircleIcon className="h-4 w-4" />
+                                  </span>
+                                  <span className="truncate">{`Create New Calendar`}</span>
+                                </button>
+                              </li>
                             </ul>
                           </li>
                           <li className="mt-auto">
@@ -203,7 +225,7 @@ export default function Layout({ children }: Props): JSX.Element {
           </Transition.Root>
 
           {/* Static sidebar for desktop */}
-          <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+          <div className="hidden lg:fixed lg:inset-y-0 lg:z-40 lg:flex lg:w-72 lg:flex-col">
             {/* Sidebar component, swap this element with another sidebar if you like */}
             <div className="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white px-6 pb-4">
               <div className="flex h-16 shrink-0 items-center">
@@ -226,6 +248,25 @@ export default function Layout({ children }: Props): JSX.Element {
                     </div>
                     <ul role="list" className="-mx-2 mt-2 space-y-1">
                       <CalendarList />
+                      <li>
+                        <button
+                          className={classNames(
+                            "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                            "group flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+                          )}
+                          onClick={() => setOpen(true)}
+                        >
+                          <span
+                            className={classNames(
+                              "border-gray-200 text-indigo-400 group-hover:border-indigo-600 group-hover:text-indigo-600",
+                              "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
+                            )}
+                          >
+                            <PlusCircleIcon className="h-4 w-4" />
+                          </span>
+                          <span className="truncate">{`Create New Calendar`}</span>
+                        </button>
+                      </li>
                     </ul>
                   </li>
                   <li className="mt-auto">
@@ -246,7 +287,7 @@ export default function Layout({ children }: Props): JSX.Element {
           </div>
 
           <div className="lg:pl-72">
-            <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+            <div className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
               <button
                 type="button"
                 className="-m-2.5 p-2.5 text-gray-700 lg:hidden"
