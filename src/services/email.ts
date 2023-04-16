@@ -1,18 +1,15 @@
 const sendEmail = async (to: string, subject: string, message: string) => {
-  const response = await fetch(
-    `https://technoscape-email-service.onrender.com/send-email`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        to,
-        subject,
-        message,
-      }),
-    }
-  );
+  const response = await fetch(`https://email.sankalpmukim.dev/send-email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      to,
+      subject,
+      message,
+    }),
+  });
   return response.ok;
 };
 
