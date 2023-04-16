@@ -25,8 +25,8 @@ export default function Calendar() {
           </a>
         </li>
         <EventItem
-          startTime={new Date("2023-04-16T02:30:00.00")}
-          endTime={new Date("2023-04-16T03:30:00.00")}
+          startTime={new Date("2023-04-16T15:30:00.00")}
+          endTime={new Date("2023-04-16T17:30:00.00")}
           title={"My important Meeting"}
         />
       </ol>

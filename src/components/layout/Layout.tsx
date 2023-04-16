@@ -1,16 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
-import { Fragment, ReactNode, useState } from "react";
+import { Fragment, ReactNode, SVGProps, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
   BellIcon,
   CalendarIcon,
-  ChartPieIcon,
   Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import {
@@ -21,20 +16,47 @@ import { classNames } from "~/utils/css";
 import { logOut } from "~/services/auth";
 import useSession from "~/components/session/useSession";
 import Link from "next/link";
+import { api } from "~/utils/api";
+import { Calendar } from "@prisma/client";
 
-const navigation = [
-  { name: "Dashboard", href: "#", icon: HomeIcon, current: true },
-  { name: "Team", href: "#", icon: UsersIcon, current: false },
-  { name: "Projects", href: "#", icon: FolderIcon, current: false },
-  { name: "Calendar", href: "#", icon: CalendarIcon, current: false },
-  { name: "Documents", href: "#", icon: DocumentDuplicateIcon, current: false },
-  { name: "Reports", href: "#", icon: ChartPieIcon, current: false },
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: React.FC<Omit<SVGProps<SVGSVGElement>, "ref">>;
+  current: boolean;
+}
+
+const navigation: NavigationItem[] = [
+  { name: "Calendar", href: "/", icon: CalendarIcon, current: true },
 ];
-const teams = [
-  { id: 1, name: "Heroicons", href: "#", initial: "H", current: false },
-  { id: 2, name: "Tailwind Labs", href: "#", initial: "T", current: false },
-  { id: 3, name: "Workcation", href: "#", initial: "W", current: false },
-];
+
+interface CalendarLocal {
+  id: string;
+  name: string;
+  onClick: () => void;
+  selected: boolean;
+}
+
+// const calendars: Calendar[] = [
+//   {
+//     id: "1",
+//     name: "Heroicons",
+//     onClick: () => console.log("#"),
+//     selected: true,
+//   },
+//   {
+//     id: "2",
+//     name: "Tailwind Labs",
+//     onClick: () => console.log("#"),
+//     selected: true,
+//   },
+//   {
+//     id: "3",
+//     name: "Workcation",
+//     onClick: () => console.log("#"),
+//     selected: false,
+//   },
+// ];
 
 type UserNavigationType = {
   name: string;
@@ -141,7 +163,7 @@ export default function Layout({ children }: Props): JSX.Element {
                             <ul role="list" className="-mx-2 space-y-1">
                               {navigation.map((item) => (
                                 <li key={item.name}>
-                                  <a
+                                  <Link
                                     href={item.href}
                                     className={classNames(
                                       item.current
@@ -160,43 +182,17 @@ export default function Layout({ children }: Props): JSX.Element {
                                       aria-hidden="true"
                                     />
                                     {item.name}
-                                  </a>
+                                  </Link>
                                 </li>
                               ))}
                             </ul>
                           </li>
                           <li>
                             <div className="text-xs font-semibold leading-6 text-gray-400">
-                              Your teams
+                              Your calendars
                             </div>
                             <ul role="list" className="-mx-2 mt-2 space-y-1">
-                              {teams.map((team) => (
-                                <li key={team.name}>
-                                  <a
-                                    href={team.href}
-                                    className={classNames(
-                                      team.current
-                                        ? "bg-gray-50 text-indigo-600"
-                                        : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                                      "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                                    )}
-                                  >
-                                    <span
-                                      className={classNames(
-                                        team.current
-                                          ? "border-indigo-600 text-indigo-600"
-                                          : "border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600",
-                                        "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
-                                      )}
-                                    >
-                                      {team.initial}
-                                    </span>
-                                    <span className="truncate">
-                                      {team.name}
-                                    </span>
-                                  </a>
-                                </li>
-                              ))}
+                              <CalendarList />
                             </ul>
                           </li>
                           <li className="mt-auto">
@@ -228,69 +224,22 @@ export default function Layout({ children }: Props): JSX.Element {
                 <img
                   className="h-8 w-auto"
                   src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-                  alt="Your Company"
+                  alt="Calendar"
                 />
               </div>
               <nav className="flex flex-1 flex-col">
                 <ul role="list" className="flex flex-1 flex-col gap-y-7">
                   <li>
                     <ul role="list" className="-mx-2 space-y-1">
-                      {navigation.map((item) => (
-                        <li key={item.name}>
-                          <a
-                            href={item.href}
-                            className={classNames(
-                              item.current
-                                ? "bg-gray-50 text-indigo-600"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                            )}
-                          >
-                            <item.icon
-                              className={classNames(
-                                item.current
-                                  ? "text-indigo-600"
-                                  : "text-gray-400 group-hover:text-indigo-600",
-                                "h-6 w-6 shrink-0"
-                              )}
-                              aria-hidden="true"
-                            />
-                            {item.name}
-                          </a>
-                        </li>
-                      ))}
+                      <NavigationList navigation={navigation} />
                     </ul>
                   </li>
                   <li>
                     <div className="text-xs font-semibold leading-6 text-gray-400">
-                      Your teams
+                      Your calendars
                     </div>
                     <ul role="list" className="-mx-2 mt-2 space-y-1">
-                      {teams.map((team) => (
-                        <li key={team.name}>
-                          <a
-                            href={team.href}
-                            className={classNames(
-                              team.current
-                                ? "bg-gray-50 text-indigo-600"
-                                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
-                              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
-                            )}
-                          >
-                            <span
-                              className={classNames(
-                                team.current
-                                  ? "border-indigo-600 text-indigo-600"
-                                  : "border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600",
-                                "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
-                              )}
-                            >
-                              {team.initial}
-                            </span>
-                            <span className="truncate">{team.name}</span>
-                          </a>
-                        </li>
-                      ))}
+                      <CalendarList />
                     </ul>
                   </li>
                   <li className="mt-auto">
@@ -443,6 +392,116 @@ export default function Layout({ children }: Props): JSX.Element {
           <Link href="/auth/login">Go login</Link>
         </>
       )}
+    </>
+  );
+}
+
+function NavigationList({ navigation }: { navigation: NavigationItem[] }) {
+  const { data, isLoading, isError, error } = api.calendar.getAll.useQuery();
+  if (isLoading) return <div>Loading...</div>;
+  if (isError)
+    return (
+      <div>
+        <div>Error</div>
+        <div>{error.message}</div>
+      </div>
+    );
+  if (!data) return <div>Not logged in</div>;
+  return (
+    <>
+      {navigation.map((item) => (
+        <li key={item.name}>
+          <a
+            href={item.href}
+            className={classNames(
+              item.current
+                ? "bg-gray-50 text-indigo-600"
+                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+            )}
+          >
+            <item.icon
+              className={classNames(
+                item.current
+                  ? "text-indigo-600"
+                  : "text-gray-400 group-hover:text-indigo-600",
+                "h-6 w-6 shrink-0"
+              )}
+              aria-hidden="true"
+            />
+            {item.name}
+          </a>
+        </li>
+      ))}
+    </>
+  );
+}
+
+function CalendarList() {
+  const {
+    data: calendars,
+    isLoading,
+    isError,
+    error,
+  } = api.calendar.getAll.useQuery();
+  if (isLoading) return <div>Loading...</div>;
+  if (isError)
+    return (
+      <div>
+        <div>Error</div>
+        <div>{error.message}</div>
+      </div>
+    );
+  if (!calendars) return <div>Not logged in</div>;
+  return (
+    <>
+      <CalendarListWithData calendarsApi={calendars} />
+    </>
+  );
+}
+
+function CalendarListWithData({ calendarsApi }: { calendarsApi: Calendar[] }) {
+  const [calendars, setCalendars] = useState<CalendarLocal[]>(
+    calendarsApi.map((v, i) => ({
+      ...v,
+      selected: true,
+      onClick: () => {
+        setCalendars((prev) =>
+          prev.map((v, j) => ({
+            ...v,
+            selected: i === j ? !v.selected : v.selected,
+          }))
+        );
+      },
+    }))
+  );
+  return (
+    <>
+      {calendars.map((calendar) => (
+        <li key={calendar.id}>
+          <button
+            onClick={calendar.onClick}
+            className={classNames(
+              calendar.selected
+                ? "bg-gray-50 text-indigo-600"
+                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+              "group flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
+            )}
+          >
+            <span
+              className={classNames(
+                calendar.selected
+                  ? "border-indigo-600 text-indigo-600"
+                  : "border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600",
+                "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
+              )}
+            >
+              {calendar.name[0]?.toUpperCase()}
+            </span>
+            <span className="truncate">{calendar.name}</span>
+          </button>
+        </li>
+      ))}
     </>
   );
 }

@@ -131,3 +131,45 @@ const isAuthed = middleware(async ({ ctx, next }) => {
 });
 
 export const authedProcedure = publicProcedure.use(isAuthed);
+
+const isEmailVerified = isAuthed.unstable_pipe(async ({ ctx, next }) => {
+  if (!ctx.user?.emailVerified) {
+    throw new TRPCError({ code: "FORBIDDEN", message: "Email not verified" });
+  }
+
+  return next();
+});
+
+export const emailVerifiedProcedure = publicProcedure.use(isEmailVerified);
+
+const isProfileCompleted = isEmailVerified.unstable_pipe(
+  async ({ ctx, next }) => {
+    if (!ctx.user) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "User not found" });
+    }
+
+    const userProfile = await ctx.prisma.profile.findUnique({
+      where: { userId: ctx.user.id },
+    });
+
+    if (!userProfile) {
+      throw new TRPCError({
+        code: "FORBIDDEN",
+        message: "Profile not found. Please complete your profile",
+      });
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        user: {
+          ...ctx.user,
+          profile: userProfile,
+        },
+      },
+    });
+  }
+);
+
+export const profileCompletedProcedure =
+  publicProcedure.use(isProfileCompleted);
