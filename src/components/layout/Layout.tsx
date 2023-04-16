@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Fragment, ReactNode, SVGProps, useState } from "react";
+import { Fragment, ReactNode, SVGProps, useEffect, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
 import {
   Bars3Icon,
@@ -18,6 +18,7 @@ import useSession from "~/components/session/useSession";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import { Calendar } from "@prisma/client";
+import { useCalendarContext } from "../calendar/useCalendars";
 
 interface NavigationItem {
   name: string;
@@ -36,27 +37,6 @@ interface CalendarLocal {
   onClick: () => void;
   selected: boolean;
 }
-
-// const calendars: Calendar[] = [
-//   {
-//     id: "1",
-//     name: "Heroicons",
-//     onClick: () => console.log("#"),
-//     selected: true,
-//   },
-//   {
-//     id: "2",
-//     name: "Tailwind Labs",
-//     onClick: () => console.log("#"),
-//     selected: true,
-//   },
-//   {
-//     id: "3",
-//     name: "Workcation",
-//     onClick: () => console.log("#"),
-//     selected: false,
-//   },
-// ];
 
 type UserNavigationType = {
   name: string;
@@ -444,6 +424,7 @@ function CalendarList() {
     isError,
     error,
   } = api.calendar.getAll.useQuery();
+
   if (isLoading) return <div>Loading...</div>;
   if (isError)
     return (
@@ -475,6 +456,12 @@ function CalendarListWithData({ calendarsApi }: { calendarsApi: Calendar[] }) {
       },
     }))
   );
+
+  const setCalendarIds = useCalendarContext()[1];
+
+  useEffect(() => {
+    setCalendarIds(calendars.filter((v) => v.selected).map((v) => v.id));
+  }, [calendars, setCalendarIds]);
   return (
     <>
       {calendars.map((calendar) => (
