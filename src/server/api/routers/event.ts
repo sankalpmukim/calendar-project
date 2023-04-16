@@ -11,6 +11,7 @@ export const eventRouter = createTRPCRouter({
           start: { gte: input.start },
           end: { lte: input.end },
         },
+        include: { calendar: true },
       });
     }),
 });

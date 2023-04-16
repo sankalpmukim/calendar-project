@@ -1,13 +1,23 @@
 import { format } from "date-fns";
 import { classNames } from "~/utils/css";
 
+export type CalendarColors =
+  | "RED"
+  | "ORANGE"
+  | "YELLOW"
+  | "GREEN"
+  | "BLUE"
+  | "PURPLE"
+  | "PINK";
+
 interface Props {
   startTime: Date;
   endTime: Date;
   title: string;
+  color: CalendarColors;
 }
 
-export default function EventItem({ startTime, endTime, title }: Props) {
+export default function EventItem({ startTime, endTime, title, color }: Props) {
   return (
     <li
       className={classNames(
@@ -18,10 +28,15 @@ export default function EventItem({ startTime, endTime, title }: Props) {
     >
       <a
         href="#"
-        className="group absolute inset-1 flex flex-col overflow-y-auto rounded-lg bg-gray-100 p-2 text-xs leading-5 hover:bg-gray-200"
+        className={classNames(
+          "group absolute inset-1 flex flex-col overflow-y-auto rounded-lg  p-2 text-xs leading-5",
+          linkClasses(color)
+        )}
       >
-        <p className="order-1 font-semibold text-gray-700">{title}</p>
-        <p className="text-gray-500 group-hover:text-gray-700">
+        <p className={classNames("order-1 font-semibold", titleClasses(color))}>
+          {title}
+        </p>
+        <p className={classNames(timeClasses(color))}>
           <time dateTime="2022-01-15T10:00">{format(startTime, "h:mm a")}</time>
         </p>
       </a>
@@ -66,5 +81,68 @@ function calculateColumnStart(eventDate: Date) {
       return `sm:col-start-6`;
     default:
       throw new Error("Could not get col-start-value");
+  }
+}
+
+function linkClasses(color: CalendarColors) {
+  switch (color) {
+    case "RED":
+      return "bg-red-50 hover:bg-red-100";
+    case "ORANGE":
+      return "bg-orange-50 hover:bg-orange-100";
+    case "YELLOW":
+      return "bg-yellow-50 hover:bg-yellow-100";
+    case "GREEN":
+      return "bg-green-50 hover:bg-green-100";
+    case "BLUE":
+      return "bg-blue-50 hover:bg-blue-100";
+    case "PURPLE":
+      return "bg-purple-50 hover:bg-purple-100";
+    case "PINK":
+      return "bg-pink-50 hover:bg-pink-100";
+    default:
+      throw new Error("Could not get link color");
+  }
+}
+
+function titleClasses(color: CalendarColors) {
+  switch (color) {
+    case "RED":
+      return "text-red-700";
+    case "ORANGE":
+      return "text-orange-700";
+    case "YELLOW":
+      return "text-yellow-700";
+    case "GREEN":
+      return "text-green-700";
+    case "BLUE":
+      return "text-blue-700";
+    case "PURPLE":
+      return "text-purple-700";
+    case "PINK":
+      return "text-pink-700";
+    default:
+      throw new Error("Could not get title color");
+  }
+}
+
+function timeClasses(color: CalendarColors) {
+  switch (color) {
+    case "RED":
+      return "text-red-500 group-hover:text-red-700";
+    case "ORANGE":
+      return "text-orange-500 group-hover:text-orange-700";
+    case "YELLOW":
+      return "text-yellow-500 group-hover:text-yellow-700";
+    case "GREEN":
+      return "text-green-500 group-hover:text-green-700";
+    case "BLUE":
+      return "text-blue-500 group-hover:text-blue-700";
+    case "PURPLE":
+      return "text-purple-500 group-hover:text-purple-700";
+    case "PINK":
+      return "text-pink-500 group-hover:text-pink-700";
+    default:
+      throw new Error("Could not get time color");
   }
 }

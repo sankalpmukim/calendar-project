@@ -81,6 +81,7 @@ export default function Calendar() {
                 startTime={new Date(event.start)}
                 endTime={new Date(event.end)}
                 title={event.name}
+                color={event.calendar.color}
               />
             ))}
       </ol>

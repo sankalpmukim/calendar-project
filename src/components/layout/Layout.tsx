@@ -20,6 +20,7 @@ import { api } from "~/utils/api";
 import { Calendar } from "@prisma/client";
 import { useCalendarContext } from "../calendar/useCalendars";
 import MarketingScreen from "../MarketingScreen";
+import { CalendarColors } from "../calendar/EventItem";
 
 interface NavigationItem {
   name: string;
@@ -32,12 +33,16 @@ const navigation: NavigationItem[] = [
   { name: "Calendar", href: "/", icon: CalendarIcon, current: true },
 ];
 
-interface CalendarLocal {
-  id: string;
-  name: string;
+// interface CalendarLocal {
+//   id: string;
+//   name: string;
+//   onClick: () => void;
+//   selected: boolean;
+// }
+type CalendarLocal = Calendar & {
   onClick: () => void;
   selected: boolean;
-}
+};
 
 type UserNavigationType = {
   name: string;
@@ -470,16 +475,16 @@ function CalendarListWithData({ calendarsApi }: { calendarsApi: Calendar[] }) {
             onClick={calendar.onClick}
             className={classNames(
               calendar.selected
-                ? "bg-gray-50 text-indigo-600"
-                : "text-gray-700 hover:bg-gray-50 hover:text-indigo-600",
+                ? buttonSelectedClass(calendar.color)
+                : buttonUnselectedClass(calendar.color),
               "group flex w-full gap-x-3 rounded-md p-2 text-sm font-semibold leading-6"
             )}
           >
             <span
               className={classNames(
                 calendar.selected
-                  ? "border-indigo-600 text-indigo-600"
-                  : "border-gray-200 text-gray-400 group-hover:border-indigo-600 group-hover:text-indigo-600",
+                  ? buttonSpanSelectedClass(calendar.color)
+                  : buttonSpanUnselectedClass(calendar.color),
                 "flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border bg-white text-[0.625rem] font-medium"
               )}
             >
@@ -491,4 +496,88 @@ function CalendarListWithData({ calendarsApi }: { calendarsApi: Calendar[] }) {
       ))}
     </>
   );
+}
+
+function buttonSelectedClass(color: CalendarColors) {
+  switch (color) {
+    case "RED":
+      return "bg-gray-50 text-red-600";
+    case "ORANGE":
+      return "bg-gray-50 text-orange-600";
+    case "YELLOW":
+      return "bg-gray-50 text-yellow-600";
+    case "GREEN":
+      return "bg-gray-50 text-green-600";
+    case "BLUE":
+      return "bg-gray-50 text-blue-600";
+    case "PURPLE":
+      return "bg-gray-50 text-purple-600";
+    case "PINK":
+      return "bg-gray-50 text-pink-600";
+    default:
+      return "bg-gray-50 text-indigo-600";
+  }
+}
+
+function buttonUnselectedClass(color: CalendarColors) {
+  switch (color) {
+    case "RED":
+      return "text-gray-700 hover:bg-gray-50 hover:text-red-600";
+    case "ORANGE":
+      return "text-gray-700 hover:bg-gray-50 hover:text-orange-600";
+    case "YELLOW":
+      return "text-gray-700 hover:bg-gray-50 hover:text-yellow-600";
+    case "GREEN":
+      return "text-gray-700 hover:bg-gray-50 hover:text-green-600";
+    case "BLUE":
+      return "text-gray-700 hover:bg-gray-50 hover:text-blue-600";
+    case "PURPLE":
+      return "text-gray-700 hover:bg-gray-50 hover:text-purple-600";
+    case "PINK":
+      return "text-gray-700 hover:bg-gray-50 hover:text-pink-600";
+    default:
+      return "text-gray-700 hover:bg-gray-50 hover:text-indigo-600";
+  }
+}
+
+function buttonSpanSelectedClass(color: CalendarColors) {
+  switch (color) {
+    case "RED":
+      return "border-red-600 text-red-600";
+    case "ORANGE":
+      return "border-orange-600 text-orange-600";
+    case "YELLOW":
+      return "border-yellow-600 text-yellow-600";
+    case "GREEN":
+      return "border-green-600 text-green-600";
+    case "BLUE":
+      return "border-blue-600 text-blue-600";
+    case "PURPLE":
+      return "border-purple-600 text-purple-600";
+    case "PINK":
+      return "border-pink-600 text-pink-600";
+    default:
+      return "border-indigo-600 text-indigo-600";
+  }
+}
+
+function buttonSpanUnselectedClass(color: CalendarColors) {
+  switch (color) {
+    case "RED":
+      return "border-gray-200 text-red-400 group-hover:border-red-600 group-hover:text-red-600";
+    case "ORANGE":
+      return "border-gray-200 text-orange-400 group-hover:border-orange-600 group-hover:text-orange-600";
+    case "YELLOW":
+      return "border-gray-200 text-yellow-400 group-hover:border-yellow-600 group-hover:text-yellow-600";
+    case "GREEN":
+      return "border-gray-200 text-green-400 group-hover:border-green-600 group-hover:text-green-600";
+    case "BLUE":
+      return "border-gray-200 text-blue-400 group-hover:border-blue-600 group-hover:text-blue-600";
+    case "PURPLE":
+      return "border-gray-200 text-purple-400 group-hover:border-purple-600 group-hover:text-purple-600";
+    case "PINK":
+      return "border-gray-200 text-pink-400 group-hover:border-pink-600 group-hover:text-pink-600";
+    default:
+      return "border-gray-200 text-indigo-400 group-hover:border-indigo-600 group-hover:text-indigo-600";
+  }
 }
