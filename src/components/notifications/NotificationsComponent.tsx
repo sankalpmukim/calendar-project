@@ -1,4 +1,4 @@
-import { NotificationsContext } from "./NotificationsContext";
+import { NotificationsContext } from "~/components/notifications/NotificationsContext";
 import { Fragment, useContext } from "react";
 import { Transition } from "@headlessui/react";
 import {

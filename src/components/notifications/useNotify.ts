@@ -2,7 +2,7 @@ import { useCallback, useContext } from "react";
 import {
   NotificationsContext,
   NotificationsContextType,
-} from "./NotificationsContext";
+} from "~/components/notifications/NotificationsContext";
 
 const useNotify = () => {
   const notificationsCtx = useContext(NotificationsContext);

@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import SignupLayout from "~/components/signup/Layout";
-import TextInput from "../inputs/TextInput";
+import TextInput from "~/components/inputs/TextInput";
 import React, { useState } from "react";
 import { api } from "~/utils/api";
-import useNotify from "../notifications/useNotify";
-import TextArea from "../inputs/TextArea";
-import ImageInput from "../inputs/ImageInput";
+import useNotify from "~/components/notifications/useNotify";
+import TextArea from "~/components/inputs/TextArea";
+import ImageInput from "~/components/inputs/ImageInput";
 
 interface ProfileForm {
   name: string;

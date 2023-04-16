@@ -1,5 +1,5 @@
 import CalendarLayout from "~/components/calendar/Layout";
-import EventItem from "./EventItem";
+import EventItem from "~/components/calendar/EventItem";
 
 export default function Calendar() {
   return (

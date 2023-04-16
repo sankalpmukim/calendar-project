@@ -9,7 +9,7 @@ import { Menu, Transition } from "@headlessui/react";
 import { classNames } from "~/utils/css";
 import { format, startOfToday, startOfWeek } from "date-fns";
 import addDays from "date-fns/addDays";
-import { DAYS_OF_WEEK } from "./contants";
+import { DAYS_OF_WEEK } from "~/components/calendar/contants";
 
 interface Props {
   children: ReactNode;

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import SignupLayout from "~/components/signup/Layout";
-import TextInput from "../inputs/TextInput";
+import TextInput from "~/components/inputs/TextInput";
 import { EnvelopeIcon } from "@heroicons/react/20/solid";
 import { useEffect, useState } from "react";
 import { api } from "~/utils/api";
-import useNotify from "../notifications/useNotify";
+import useNotify from "~/components/notifications/useNotify";
 
 interface RegistrationForm {
   email: string;
